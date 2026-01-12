@@ -1,7 +1,7 @@
 flutter_native_splash:
   color: "#D30A40"
-  image: "assets/images/pokeball_foreground.png"
+  image: "assets/icon/pokeball_foreground.png"
   android_12:
-    image: "assets/images/pokeball_foreground.png"
+    image: "assets/icon/pokeball_foreground.png"
     color: "#D30A40"
   fullscreen: true

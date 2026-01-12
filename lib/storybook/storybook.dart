@@ -11,7 +11,7 @@ class PokedexStorybook extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Storybook(
-      initialStory: 'Widgets/PokemonFilterChip',
+      initialStory: 'Widgets/PokemonCard',
       stories: [
         pokemonCardStory(),
         pokemonTypeLabelStory(),
