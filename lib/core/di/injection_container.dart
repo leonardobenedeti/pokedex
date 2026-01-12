@@ -1,0 +1,32 @@
+import 'package:dio/dio.dart';
+import 'package:get_it/get_it.dart';
+
+import '../../features/pokemon/data/datasources/pokemon_remote_data_source.dart';
+import '../../features/pokemon/data/repositories/pokemon_repository_impl.dart';
+import '../../features/pokemon/domain/repositories/pokemon_repository.dart';
+import '../../features/pokemon/domain/usecases/get_pokemons.dart';
+import '../network/network_client.dart';
+
+final sl = GetIt.instance;
+
+Future<void> init() async {
+  //! Features - Pokemon
+  // Use cases
+  sl.registerLazySingleton(() => GetPokemons(sl()));
+
+  // Repository
+  sl.registerLazySingleton<PokemonRepository>(
+    () => PokemonRepositoryImpl(remoteDataSource: sl()),
+  );
+
+  // Data sources
+  sl.registerLazySingleton<PokemonRemoteDataSource>(
+    () => PokemonRemoteDataSourceImpl(client: sl()),
+  );
+
+  //! Core
+  sl.registerLazySingleton<NetworkClient>(() => DioClient(sl()));
+
+  //! External
+  sl.registerLazySingleton(() => Dio());
+}
