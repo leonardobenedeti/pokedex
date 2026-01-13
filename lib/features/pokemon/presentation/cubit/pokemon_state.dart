@@ -1,8 +1,9 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../core/enums/pokemon_type.dart';
 import '../../domain/entities/pokemon_entity.dart';
 
-enum PokemonSortType { alphabetic, code }
+enum PokemonSortType { alphabetic, code, none }
 
 abstract class PokemonState extends Equatable {
   const PokemonState();
@@ -20,12 +21,14 @@ class PokemonLoaded extends PokemonState {
   final List<PokemonEntity> filteredPokemons;
   final String searchTerm;
   final PokemonSortType sortType;
+  final PokemonType? selectedType;
 
   const PokemonLoaded({
     required this.allPokemons,
     required this.filteredPokemons,
     this.searchTerm = '',
-    this.sortType = PokemonSortType.code,
+    this.sortType = PokemonSortType.none,
+    this.selectedType,
   });
 
   @override
@@ -34,6 +37,7 @@ class PokemonLoaded extends PokemonState {
     filteredPokemons,
     searchTerm,
     sortType,
+    selectedType,
   ];
 
   PokemonLoaded copyWith({
@@ -41,12 +45,14 @@ class PokemonLoaded extends PokemonState {
     List<PokemonEntity>? filteredPokemons,
     String? searchTerm,
     PokemonSortType? sortType,
+    PokemonType? selectedType,
   }) {
     return PokemonLoaded(
       allPokemons: allPokemons ?? this.allPokemons,
       filteredPokemons: filteredPokemons ?? this.filteredPokemons,
       searchTerm: searchTerm ?? this.searchTerm,
       sortType: sortType ?? this.sortType,
+      selectedType: selectedType ?? this.selectedType,
     );
   }
 }

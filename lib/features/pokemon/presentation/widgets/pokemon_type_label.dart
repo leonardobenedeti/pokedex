@@ -18,37 +18,47 @@ class PokemonTypeLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 32,
-      decoration: isFilled
-          ? BoxDecoration(
-              color: secondaryColor,
-              borderRadius: BorderRadius.circular(16),
-            )
-          : null,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      child: Stack(
         children: [
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: primaryColor,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: Colors.white, size: 18),
-          ),
-          const SizedBox(width: 8),
-          Padding(
-            padding: EdgeInsets.only(right: isFilled ? 12 : 0),
-            child: Text(
-              label,
-              style: TextStyle(
-                color: isFilled ? Colors.white : secondaryColor,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
+          if (isFilled)
+            Positioned.fill(
+              child: Center(
+                child: Container(
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: secondaryColor,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
               ),
             ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 32,
+                height: 32,
+                decoration: BoxDecoration(
+                  color: primaryColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: Colors.white, size: 18),
+              ),
+              const SizedBox(width: 8),
+              Padding(
+                padding: EdgeInsets.only(right: isFilled ? 12 : 0),
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    color: isFilled ? Colors.white : secondaryColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

@@ -122,153 +122,175 @@ class PokemonDetailModal extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 16,
-                ),
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: pokemon.type.map((typeString) {
-                        final type = PokemonType.fromString(typeString);
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: PokemonTypeLabel(
-                            label: type.label,
-                            icon: type.icon,
-                            primaryColor: type.color,
-                            secondaryColor: type.secondaryColor,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: pokemon.type.map((typeString) {
+                              final type = PokemonType.fromString(typeString);
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4,
+                                ),
+                                child: PokemonTypeLabel(
+                                  label: type.label,
+                                  icon: type.icon,
+                                  primaryColor: type.color,
+                                  secondaryColor: type.secondaryColor,
+                                ),
+                              );
+                            }).toList(),
                           ),
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 24),
+                          const SizedBox(height: 24),
 
-                    const Text(
-                      'Informações',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: ColorsConstants.darkBlue,
+                          const Text(
+                            'Informações',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: ColorsConstants.darkBlue,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          _buildSpecRow('Altura', pokemon.height),
+                          _buildSpecRow('Peso', pokemon.weight),
+                          _buildSpecRow('Doce', pokemon.candy),
+                          if (pokemon.candyCount != null)
+                            _buildSpecRow(
+                              'Candy Count',
+                              '${pokemon.candyCount}',
+                            ),
+                          _buildSpecRow('Ovo', pokemon.egg),
+                          if (pokemon.spawnChance != null)
+                            _buildSpecRow('Chance', '${pokemon.spawnChance}%'),
+
+                          const SizedBox(height: 24),
+
+                          const Text(
+                            'Fraquezas',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: ColorsConstants.darkBlue,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Wrap(
+                            spacing: 8,
+                            runSpacing: 8,
+                            children: pokemon.weaknesses.map((weakness) {
+                              final type = PokemonType.fromString(weakness);
+                              return PokemonTypeLabel(
+                                label: type.label,
+                                icon: type.icon,
+                                primaryColor: type.color,
+                                secondaryColor: type.secondaryColor,
+                                isFilled: false,
+                              );
+                            }).toList(),
+                          ),
+
+                          const SizedBox(height: 24),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 16),
-
-                    _buildSpecRow('Altura', pokemon.height),
-                    _buildSpecRow('Peso', pokemon.weight),
-                    _buildSpecRow('Doce', pokemon.candy),
-                    if (pokemon.candyCount != null)
-                      _buildSpecRow('Candy Count', '${pokemon.candyCount}'),
-                    _buildSpecRow('Ovo', pokemon.egg),
-                    if (pokemon.spawnChance != null)
-                      _buildSpecRow('Chance', '${pokemon.spawnChance}%'),
-
-                    const SizedBox(height: 24),
-
-                    const Text(
-                      'Fraquezas',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: ColorsConstants.darkBlue,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: pokemon.weaknesses.map((weakness) {
-                        final type = PokemonType.fromString(weakness);
-                        return PokemonTypeLabel(
-                          label: type.label,
-                          icon: type.icon,
-                          primaryColor: type.color,
-                          secondaryColor: type.secondaryColor,
-                          isFilled: false,
-                        );
-                      }).toList(),
-                    ),
-
-                    const SizedBox(height: 24),
 
                     if ((pokemon.prevEvolution != null &&
                             pokemon.prevEvolution!.isNotEmpty) ||
                         (pokemon.nextEvolution != null &&
                             pokemon.nextEvolution!.isNotEmpty)) ...[
-                      const Text(
-                        'Relacionados',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: ColorsConstants.darkBlue,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: const Text(
+                          'Relacionados',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: ColorsConstants.darkBlue,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 16),
-                      SizedBox(
-                        height: 200,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemCount:
-                              (pokemon.prevEvolution?.length ?? 0) +
-                              (pokemon.nextEvolution?.length ?? 0),
-                          separatorBuilder: (_, __) =>
-                              const SizedBox(width: 16),
-                          itemBuilder: (context, index) {
-                            final allEvolutions = [
-                              ...(pokemon.prevEvolution ?? []),
-                              ...(pokemon.nextEvolution ?? []),
-                            ];
-                            final evolution = allEvolutions[index];
-
-                            final evoPokemon = PokemonEntity(
-                              id: int.tryParse(evolution.numLabel) ?? 0,
-                              numLabel: evolution.numLabel,
-                              name: evolution.name,
-                              img:
-                                  'http://www.serebii.net/pokemongo/pokemon/${evolution.numLabel}.png',
-                              type: const [],
-                              height: '',
-                              weight: '',
-                              candy: '',
-                              egg: '',
-                              weaknesses: const [],
-                            );
-
-                            return AspectRatio(
-                              aspectRatio: 156 / 182,
-                              child: PokemonCard(
-                                pokemon: evoPokemon,
-                                onTap: () {
-                                  final cubit = context.read<PokemonCubit>();
-                                  final state = cubit.state;
-
-                                  if (state is PokemonLoaded) {
-                                    final fullPokemon = tryFindPokemon(
-                                      state.allPokemons,
-                                      evolution.numLabel,
-                                    );
-
-                                    if (fullPokemon != null) {
-                                      Navigator.of(context).pop();
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) =>
-                                            BlocProvider.value(
-                                              value: cubit,
-                                              child: PokemonDetailModal(
-                                                pokemon: fullPokemon,
-                                              ),
-                                            ),
-                                      );
-                                    }
-                                  }
-                                },
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          return SizedBox(
+                            height: 200,
+                            child: ListView.separated(
+                              scrollDirection: Axis.horizontal,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
                               ),
-                            );
-                          },
-                        ),
+                              itemCount:
+                                  (pokemon.prevEvolution?.length ?? 0) +
+                                  (pokemon.nextEvolution?.length ?? 0),
+                              separatorBuilder: (_, __) =>
+                                  const SizedBox(width: 16),
+                              itemBuilder: (context, index) {
+                                final allEvolutions = [
+                                  ...(pokemon.prevEvolution ?? []),
+                                  ...(pokemon.nextEvolution ?? []),
+                                ];
+                                final evolution = allEvolutions[index];
+
+                                final evoPokemon = PokemonEntity(
+                                  id: int.tryParse(evolution.numLabel) ?? 0,
+                                  numLabel: evolution.numLabel,
+                                  name: evolution.name,
+                                  img:
+                                      'http://www.serebii.net/pokemongo/pokemon/${evolution.numLabel}.png',
+                                  type: const [],
+                                  height: '',
+                                  weight: '',
+                                  candy: '',
+                                  egg: '',
+                                  weaknesses: const [],
+                                );
+
+                                return SizedBox(
+                                  width: constraints.maxWidth / 2.3,
+                                  child: PokemonCard(
+                                    pokemon: evoPokemon,
+                                    onTap: () {
+                                      final cubit = context
+                                          .read<PokemonCubit>();
+                                      final state = cubit.state;
+
+                                      if (state is PokemonLoaded) {
+                                        final fullPokemon = tryFindPokemon(
+                                          state.allPokemons,
+                                          evolution.numLabel,
+                                        );
+
+                                        if (fullPokemon != null) {
+                                          Navigator.of(context).pop();
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) =>
+                                                BlocProvider.value(
+                                                  value: cubit,
+                                                  child: PokemonDetailModal(
+                                                    pokemon: fullPokemon,
+                                                  ),
+                                                ),
+                                          );
+                                        }
+                                      }
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
                       ),
+
                       const SizedBox(height: 24),
                     ],
                   ],

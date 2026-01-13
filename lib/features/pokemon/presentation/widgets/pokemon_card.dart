@@ -22,7 +22,6 @@ class PokemonCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 182,
-      width: 156,
       child: GestureDetector(
         onTap: onTap,
         child: Stack(

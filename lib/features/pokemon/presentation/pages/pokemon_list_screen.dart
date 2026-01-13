@@ -9,7 +9,9 @@ import '../cubit/pokemon_cubit.dart';
 import '../cubit/pokemon_state.dart';
 import '../widgets/pokemon_card.dart';
 import '../widgets/pokemon_detail_modal.dart';
+import '../widgets/pokemon_error_widget.dart';
 import '../widgets/pokemon_filter_chip.dart';
+import '../widgets/pokemon_filter_modal.dart';
 
 class PokemonListScreen extends StatelessWidget {
   const PokemonListScreen({super.key});
@@ -44,6 +46,7 @@ class _PokemonListViewState extends State<PokemonListView> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
+        physics: const ClampingScrollPhysics(),
         child: Column(
           children: [
             Stack(
@@ -207,7 +210,7 @@ class _PokemonListViewState extends State<PokemonListView> {
                   _buildFilters(),
                   const SizedBox(height: 16),
                   _buildPokemonGrid(),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 80),
                 ],
               ),
             ),
@@ -222,38 +225,68 @@ class _PokemonListViewState extends State<PokemonListView> {
       builder: (context, state) {
         final sortType = state is PokemonLoaded
             ? state.sortType
-            : PokemonSortType.code;
+            : PokemonSortType.none;
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(8),
+              GestureDetector(
+                onTap: () {
+                  final cubit = context.read<PokemonCubit>();
+                  showDialog(
+                    context: context,
+                    builder: (context) => BlocProvider.value(
+                      value: cubit,
+                      child: const PokemonFilterModal(),
+                    ),
+                  );
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.all(8),
+                  child: const Icon(Icons.tune, color: Colors.white, size: 24),
                 ),
-                padding: const EdgeInsets.all(8),
-                child: const Icon(Icons.tune, color: Colors.white, size: 24),
               ),
               const SizedBox(width: 12),
               PokemonFilterChip(
                 label: 'alfabética (A-Z)',
                 isSelected: sortType == PokemonSortType.alphabetic,
-                onTap: () => context.read<PokemonCubit>().changeSortType(
-                  PokemonSortType.alphabetic,
-                ),
+                onTap: () {
+                  if (sortType == PokemonSortType.alphabetic) {
+                    context.read<PokemonCubit>().changeSortType(
+                      PokemonSortType.none,
+                    );
+                  } else {
+                    context.read<PokemonCubit>().changeSortType(
+                      PokemonSortType.alphabetic,
+                    );
+                  }
+                },
                 onClear: () => context.read<PokemonCubit>().changeSortType(
-                  PokemonSortType.code,
+                  PokemonSortType.none,
                 ),
               ),
               const SizedBox(width: 8),
               PokemonFilterChip(
                 label: 'código (crescente)',
                 isSelected: sortType == PokemonSortType.code,
-                onTap: () => context.read<PokemonCubit>().changeSortType(
-                  PokemonSortType.code,
+                onTap: () {
+                  if (sortType == PokemonSortType.code) {
+                    context.read<PokemonCubit>().changeSortType(
+                      PokemonSortType.none,
+                    );
+                  } else {
+                    context.read<PokemonCubit>().changeSortType(
+                      PokemonSortType.code,
+                    );
+                  }
+                },
+                onClear: () => context.read<PokemonCubit>().changeSortType(
+                  PokemonSortType.none,
                 ),
-                onClear: () => {},
               ),
             ],
           ),
@@ -268,11 +301,9 @@ class _PokemonListViewState extends State<PokemonListView> {
         if (state is PokemonLoading) {
           return const Center(child: CircularProgressIndicator());
         } else if (state is PokemonError) {
-          return Center(
-            child: Text(
-              state.message,
-              style: const TextStyle(color: Colors.red),
-            ),
+          return PokemonErrorWidget(
+            message: state.message,
+            onTryAgain: () => context.read<PokemonCubit>().fetchPokemons(),
           );
         } else if (state is PokemonLoaded) {
           if (state.filteredPokemons.isEmpty) {
@@ -289,7 +320,6 @@ class _PokemonListViewState extends State<PokemonListView> {
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
-              childAspectRatio: 156 / 182,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
             ),

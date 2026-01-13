@@ -20,6 +20,10 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
 
   @override
   Future<List<PokemonModel>> getPokemons() async {
+    /// Uncomment this lines to force error or loading
+    // throw Exception('Force error when try to get learning path. Code: xpto123');
+    // await Future.delayed(const Duration(seconds: 10));
+
     try {
       final response = await client.get(url);
 
