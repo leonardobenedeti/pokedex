@@ -12,6 +12,7 @@ import '../widgets/pokemon_detail_modal.dart';
 import '../widgets/pokemon_error_widget.dart';
 import '../widgets/pokemon_filter_chip.dart';
 import '../widgets/pokemon_filter_modal.dart';
+import '../widgets/pokemon_list_header_delegate.dart';
 
 class PokemonListScreen extends StatelessWidget {
   const PokemonListScreen({super.key});
@@ -34,6 +35,21 @@ class PokemonListView extends StatefulWidget {
 
 class _PokemonListViewState extends State<PokemonListView> {
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  bool _showBackToTop = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      final show = _scrollController.offset > 300;
+      if (show != _showBackToTop) {
+        setState(() {
+          _showBackToTop = show;
+        });
+      }
+    });
+  }
 
   @override
   void dispose() {
@@ -45,178 +61,256 @@ class _PokemonListViewState extends State<PokemonListView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        physics: const ClampingScrollPhysics(),
-        child: Column(
-          children: [
-            Stack(
-              children: [
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    decoration: const BoxDecoration(
-                      color: ColorsConstants.primary,
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(32),
-                        bottomRight: Radius.circular(32),
-                      ),
-                    ),
-                    padding: const EdgeInsets.fromLTRB(24, 60, 24, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: Stack(
+        children: [
+          CustomScrollView(
+            physics: const ClampingScrollPhysics(),
+            controller: _scrollController,
+            slivers: [
+              SliverToBoxAdapter(
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        decoration: const BoxDecoration(
+                          color: ColorsConstants.primary,
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(32),
+                            bottomRight: Radius.circular(32),
+                          ),
+                        ),
+                        padding: const EdgeInsets.fromLTRB(24, 60, 24, 0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              StringConstants.pokedexTitle,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 32,
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  StringConstants.pokedexTitle,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 32,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            Image.asset(
+                              AssetsConstants.pokeball,
+                              width: 32,
+                              height: 32,
                             ),
                           ],
                         ),
-                        const SizedBox(height: 12),
-                        Image.asset(
-                          AssetsConstants.pokeball,
-                          width: 32,
-                          height: 32,
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.08),
-                    Stack(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 140),
-                          child: Image.asset(
-                            AssetsConstants.koraidon,
-                            width: double.infinity,
-                            fit: BoxFit.fitWidth,
-                          ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.08,
                         ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: [
-                                  Colors.white,
-                                  Colors.white,
-                                  Colors.white,
-                                  Colors.white,
-                                  Colors.white.withValues(alpha: 0.9),
-                                  Colors.white.withValues(alpha: 0.0),
-                                ],
+                        Stack(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 90),
+                              child: Image.asset(
+                                AssetsConstants.koraidon,
+                                width: double.infinity,
+                                fit: BoxFit.fitWidth,
                               ),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const SizedBox(height: 24),
-                                const Text(
-                                  StringConstants.landingHeadline,
-                                  style: TextStyle(
-                                    color: ColorsConstants.darkBlue,
-                                    fontSize: 32,
-                                    height: 1.2,
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                    colors: [
+                                      Colors.white,
+                                      Colors.white,
+                                      Colors.white,
+                                      Colors.white,
+                                      Colors.white,
+                                      Colors.white.withValues(alpha: 0.9),
+                                      Colors.white.withValues(alpha: 0.0),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(height: 12),
-                                Text(
-                                  StringConstants.landingSubtitle,
-                                  style: TextStyle(
-                                    color: ColorsConstants.darkBlue.withValues(
-                                      alpha: 0.6,
-                                    ),
-                                    fontSize: 16,
-                                    height: 1.4,
-                                  ),
-                                ),
-                                const SizedBox(height: 12),
-                                Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.baseline,
-                                  textBaseline: TextBaseline.alphabetic,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
+                                    const SizedBox(height: 24),
                                     const Text(
-                                      StringConstants.pokemonCount,
+                                      StringConstants.landingHeadline,
                                       style: TextStyle(
-                                        color: ColorsConstants.primary,
-                                        fontSize: 40,
+                                        color: ColorsConstants.darkBlue,
+                                        fontSize: 32,
+                                        height: 1.2,
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
-                                    const Text(
-                                      StringConstants.pokemonLabel,
+                                    const SizedBox(height: 12),
+                                    Text(
+                                      StringConstants.landingSubtitle,
                                       style: TextStyle(
-                                        color: ColorsConstants.primary,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.normal,
+                                        color: ColorsConstants.darkBlue
+                                            .withValues(alpha: 0.6),
+                                        fontSize: 16,
+                                        height: 1.4,
                                       ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.baseline,
+                                      textBaseline: TextBaseline.alphabetic,
+                                      children: [
+                                        const Text(
+                                          StringConstants.pokemonCount,
+                                          style: TextStyle(
+                                            color: ColorsConstants.primary,
+                                            fontSize: 40,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        const Text(
+                                          StringConstants.pokemonLabel,
+                                          style: TextStyle(
+                                            color: ColorsConstants.primary,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.normal,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 40),
-                              ],
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
                   ],
                 ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: _searchController,
-                    onChanged: (value) =>
-                        context.read<PokemonCubit>().searchPokemons(value),
-                    decoration: InputDecoration(
-                      hintText: 'Nome ou código do Pokemon',
-                      hintStyle: const TextStyle(color: Colors.grey),
-                      prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                      filled: true,
-                      fillColor: const Color(0xFFF3F3F3),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 12,
-                      ),
+              ),
+              SliverPersistentHeader(
+                pinned: true,
+                delegate: PokemonListHeaderDelegate(
+                  height: 110,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextField(
+                          controller: _searchController,
+                          onChanged: (value) => context
+                              .read<PokemonCubit>()
+                              .searchPokemons(value),
+                          decoration: InputDecoration(
+                            hintText: 'Nome ou código do Pokemon',
+                            hintStyle: const TextStyle(color: Colors.grey),
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: Colors.grey,
+                            ),
+                            filled: true,
+                            fillColor: const Color(0xFFF3F3F3),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        _buildFilters(),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  _buildFilters(),
-                  const SizedBox(height: 16),
-                  _buildPokemonGrid(),
-                  const SizedBox(height: 80),
-                ],
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _buildPokemonGrid(),
+                ),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 80)),
+            ],
+          ),
+          if (_showBackToTop)
+            Positioned(
+              bottom: 24,
+              left: 0,
+              right: 0,
+              child: Center(
+                child: GestureDetector(
+                  onTap: _scrollToTop,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: const [
+                        Text(
+                          'Voltar ao topo',
+                          style: TextStyle(
+                            color: ColorsConstants.darkBlue,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Icon(
+                          Icons.arrow_upward,
+                          color: ColorsConstants.darkBlue,
+                          size: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-          ],
-        ),
+        ],
       ),
+    );
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
     );
   }
 
