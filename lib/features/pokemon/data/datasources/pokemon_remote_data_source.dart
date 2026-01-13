@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -22,16 +24,9 @@ class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
       final response = await client.get(url);
 
       if (response.statusCode == 200) {
-        final dynamic responseData = response.data;
-        late Map<String, dynamic> data;
+        final dynamic responseData = json.decode(response.data);
 
-        if (responseData is Map<String, dynamic>) {
-          data = responseData;
-        } else {
-          throw ServerException(message: ErrorMessages.invalidResponse);
-        }
-
-        final List pokemonList = data['pokemon'] ?? [];
+        final List pokemonList = responseData['pokemon'] ?? [];
         return pokemonList.map((json) => PokemonModel.fromJson(json)).toList();
       } else {
         throw ServerException(

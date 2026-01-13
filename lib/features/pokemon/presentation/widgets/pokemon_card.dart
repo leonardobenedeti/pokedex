@@ -25,74 +25,84 @@ class PokemonCard extends StatelessWidget {
       width: 156,
       child: GestureDetector(
         onTap: onTap,
-        child: Container(
-          decoration: BoxDecoration(
-            color: isInverse ? ColorsConstants.darkBlue : Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: isInverse ? ColorsConstants.darkBlue : Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.grey.withValues(alpha: 0.2)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
-            ],
-          ),
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 86,
-                child: Center(
-                  child: Hero(
-                    tag: 'pokemon-${pokemon.id}',
-                    child: Image.network(
-                      kIsWeb
-                          ? 'https://corsproxy.io/?${Uri.encodeComponent(pokemon.img)}'
-                          : pokemon.img,
-                      fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.error_outline, size: 40),
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return const Center(
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        );
-                      },
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 86,
+                    child: Center(
+                      child: Hero(
+                        tag: 'pokemon-${pokemon.id}',
+                        child: Transform.scale(
+                          scale: 1.2, // Zoom in to remove img extra padding
+                          child: Image.network(
+                            kIsWeb
+                                ? 'https://corsproxy.io/?${Uri.encodeComponent(pokemon.img)}'
+                                : pokemon.img,
+                            fit: BoxFit.contain,
+                            errorBuilder: (context, error, stackTrace) =>
+                                const Icon(Icons.error_outline, size: 40),
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return const Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              _buildHighlightedName(),
-              const SizedBox(height: 4),
-              Text(
-                '#${pokemon.numLabel}',
-                style: TextStyle(
-                  color: isInverse
-                      ? Colors.white.withValues(alpha: 0.5)
-                      : Colors.grey,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: isInverse ? Colors.white : ColorsConstants.darkBlue,
-                    shape: BoxShape.circle,
+                  const SizedBox(height: 8),
+                  _buildHighlightedName(),
+                  const SizedBox(height: 4),
+                  Text(
+                    '#${pokemon.numLabel}',
+                    style: TextStyle(
+                      color: isInverse
+                          ? Colors.white.withValues(alpha: 0.5)
+                          : Colors.grey,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  child: Icon(
-                    Icons.add,
-                    color: isInverse ? ColorsConstants.darkBlue : Colors.white,
-                    size: 16,
-                  ),
+                ],
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                margin: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: isInverse ? Colors.white : ColorsConstants.darkBlue,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.add,
+                  color: isInverse ? ColorsConstants.darkBlue : Colors.white,
+                  size: 16,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -116,6 +126,8 @@ class PokemonCard extends StatelessWidget {
     final int endIndex = startIndex + searchTerm.length;
 
     return RichText(
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
       text: TextSpan(
         style: style,
         children: [

@@ -5,12 +5,16 @@ import '../../features/pokemon/data/datasources/pokemon_remote_data_source.dart'
 import '../../features/pokemon/data/repositories/pokemon_repository_impl.dart';
 import '../../features/pokemon/domain/repositories/pokemon_repository.dart';
 import '../../features/pokemon/domain/usecases/get_pokemons.dart';
+import '../../features/pokemon/presentation/cubit/pokemon_cubit.dart';
 import '../network/network_client.dart';
 
 final sl = GetIt.instance;
 
 Future<void> init() async {
   //! Features - Pokemon
+  // Cubit
+  sl.registerFactory(() => PokemonCubit(getPokemons: sl()));
+
   // Use cases
   sl.registerLazySingleton(() => GetPokemons(sl()));
 
