@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../../../../core/error/error_messages.dart';
 import '../../../../core/error/exceptions.dart';
@@ -14,9 +13,9 @@ abstract class PokemonRemoteDataSource {
 
 class PokemonRemoteDataSourceImpl implements PokemonRemoteDataSource {
   final NetworkClient client;
-  final String url = dotenv.get('POKEDEX_URL');
+  final String url;
 
-  PokemonRemoteDataSourceImpl({required this.client});
+  PokemonRemoteDataSourceImpl({required this.client, required this.url});
 
   @override
   Future<List<PokemonModel>> getPokemons() async {

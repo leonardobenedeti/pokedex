@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../features/pokemon/data/datasources/pokemon_remote_data_source.dart';
@@ -12,6 +13,9 @@ import '../network/network_client.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  // Setup
+  final String url = dotenv.get('POKEDEX_URL');
+
   //! Features - Pokemon
   // Cubit
   sl.registerFactory(() => PokemonCubit(getPokemons: sl()));
@@ -26,7 +30,7 @@ Future<void> init() async {
 
   // Data sources
   sl.registerLazySingleton<PokemonRemoteDataSource>(
-    () => PokemonRemoteDataSourceImpl(client: sl()),
+    () => PokemonRemoteDataSourceImpl(client: sl(), url: url),
   );
 
   //! Core
