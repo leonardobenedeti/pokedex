@@ -17,6 +17,7 @@ class PokemonEntity {
   final List<double>? multipliers;
   final List<String> weaknesses;
   final List<EvolutionEntity>? nextEvolution;
+  final List<EvolutionEntity>? prevEvolution;
 
   const PokemonEntity({
     required this.id,
@@ -35,5 +36,6 @@ class PokemonEntity {
     this.multipliers,
     required this.weaknesses,
     this.nextEvolution,
+    this.prevEvolution,
   });
 }

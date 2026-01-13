@@ -19,6 +19,7 @@ class PokemonModel extends PokemonEntity {
     super.multipliers,
     required super.weaknesses,
     super.nextEvolution,
+    super.prevEvolution,
   });
 
   factory PokemonModel.fromJson(Map<String, dynamic> json) {
@@ -47,6 +48,11 @@ class PokemonModel extends PokemonEntity {
               json['next_evolution'].map((x) => EvolutionModel.fromJson(x)),
             )
           : null,
+      prevEvolution: json['prev_evolution'] != null
+          ? List<EvolutionModel>.from(
+              json['prev_evolution'].map((x) => EvolutionModel.fromJson(x)),
+            )
+          : null,
     );
   }
 
@@ -68,6 +74,12 @@ class PokemonModel extends PokemonEntity {
       'multipliers': multipliers,
       'weaknesses': weaknesses,
       'next_evolution': nextEvolution?.map((x) {
+        if (x is EvolutionModel) {
+          return x.toJson();
+        }
+        return {'num': x.numLabel, 'name': x.name};
+      }).toList(),
+      'prev_evolution': prevEvolution?.map((x) {
         if (x is EvolutionModel) {
           return x.toJson();
         }

@@ -8,6 +8,7 @@ import '../../../../core/di/injection_container.dart';
 import '../cubit/pokemon_cubit.dart';
 import '../cubit/pokemon_state.dart';
 import '../widgets/pokemon_card.dart';
+import '../widgets/pokemon_detail_modal.dart';
 import '../widgets/pokemon_filter_chip.dart';
 
 class PokemonListScreen extends StatelessWidget {
@@ -298,7 +299,16 @@ class _PokemonListViewState extends State<PokemonListView> {
                 pokemon: state.filteredPokemons[index],
                 searchTerm: state.searchTerm,
                 onTap: () {
-                  // TODO(leo): open modal with pokemon details
+                  final cubit = context.read<PokemonCubit>();
+                  showDialog(
+                    context: context,
+                    builder: (context) => BlocProvider.value(
+                      value: cubit,
+                      child: PokemonDetailModal(
+                        pokemon: state.filteredPokemons[index],
+                      ),
+                    ),
+                  );
                 },
               );
             },
