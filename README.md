@@ -55,9 +55,22 @@ Desafio proposto pela empresa Serasa Experian.
 - Configure o arquivo .env com as variáveis de ambiente
   - POKEDEX_URL=[URL da API]
 
+- Altere os arquivos google-services.json e GoogleService-Info.plist com as configurações do Firebase
+  - O projeto está com um arquivo apenas de exemplo
+
+
 ## Executar
 - Para executar o Storybook: flutter pub run storybook_flutter:main
 - Para executar a aplicação: flutter run
 
 Ou caso utilize VSCode, basta clicar no botão "Run" no editor, que já conta com ambas configurações.
 
+## Resultados
+
+
+<video controls width="300" autoplay loop muted>
+    <source src="readme_assets/result-app.mov" type="video/mp4">
+</video>
+
+### Method channel chamado pelo flutter executando código nativo
+![image](readme_assets/method-channel-evidence.png)
