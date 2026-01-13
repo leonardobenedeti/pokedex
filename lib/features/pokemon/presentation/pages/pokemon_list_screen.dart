@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/constants/assets_constants.dart';
 import '../../../../core/constants/colors_constants.dart';
 import '../../../../core/constants/string_constants.dart';
@@ -41,6 +42,10 @@ class _PokemonListViewState extends State<PokemonListView> {
   @override
   void initState() {
     super.initState();
+    sl<AnalyticsService>().setCurrentScreen(
+      screenName: 'pokemon_list',
+      screenClassOverride: 'PokemonListScreen',
+    );
     _scrollController.addListener(() {
       final show = _scrollController.offset > 300;
       if (show != _showBackToTop) {
@@ -423,6 +428,13 @@ class _PokemonListViewState extends State<PokemonListView> {
                 pokemon: state.filteredPokemons[index],
                 searchTerm: state.searchTerm,
                 onTap: () {
+                  sl<AnalyticsService>().logEvent(
+                    name: 'select_pokemon',
+                    parameters: {
+                      'pokemon_id': state.filteredPokemons[index].id,
+                      'pokemon_name': state.filteredPokemons[index].name,
+                    },
+                  );
                   final cubit = context.read<PokemonCubit>();
                   showDialog(
                     context: context,
