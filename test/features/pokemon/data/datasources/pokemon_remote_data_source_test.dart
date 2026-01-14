@@ -335,6 +335,126 @@ void main() {
         expect(result[0].nextEvolution, isNull);
         expect(result[0].prevEvolution, isNull);
       });
+      test(
+        'should sanitize pokemon name by removing (Male) and (Female)',
+        () async {
+          // arrange
+          final pokemonWithSuffixes = {
+            'id': 29,
+            'num': '029',
+            'name': 'Nidoran (Female)',
+            'img': 'http://www.serebii.net/pokemongo/pokemon/029.png',
+            'type': ['Poison'],
+            'height': '0.41 m',
+            'weight': '7.0 kg',
+            'candy': 'Nidoran (Female) Candy',
+            'candy_count': 25,
+            'egg': '5 km',
+            'spawn_chance': 1.38,
+            'avg_spawns': 138,
+            'spawn_time': '01:51',
+            'multipliers': [1.63, 2.48],
+            'weaknesses': ['Ground', 'Psychic'],
+            'next_evolution': [
+              {'num': '030', 'name': 'Nidorina'},
+              {'num': '031', 'name': 'Nidoqueen'},
+            ],
+          };
+
+          final pokemonWithSuffixes2 = {
+            'id': 32,
+            'num': '032',
+            'name': 'Nidoran (Male)',
+            'img': 'http://www.serebii.net/pokemongo/pokemon/032.png',
+            'type': ['Poison'],
+            'height': '0.51 m',
+            'weight': '9.0 kg',
+            'candy': 'Nidoran (Male) Candy',
+            'candy_count': 25,
+            'egg': '5 km',
+            'spawn_chance': 1.31,
+            'avg_spawns': 131,
+            'spawn_time': '01:12',
+            'multipliers': [1.64, 1.7],
+            'weaknesses': ['Ground', 'Psychic'],
+            'next_evolution': [
+              {'num': '033', 'name': 'Nidorino'},
+              {'num': '034', 'name': 'Nidoking'},
+            ],
+          };
+
+          final responseData = {
+            'pokemon': [pokemonWithSuffixes, pokemonWithSuffixes2],
+          };
+
+          final mockResponse = Response(
+            requestOptions: RequestOptions(path: ''),
+            statusCode: 200,
+            data: json.encode(responseData),
+          );
+
+          when(
+            () => mockNetworkClient.get(any()),
+          ).thenAnswer((_) async => mockResponse);
+
+          // act
+          final result = await dataSource.getPokemons();
+
+          // assert
+          expect(result.length, equals(2));
+          expect(result[0].name, equals('Nidoran'));
+          expect(result[1].name, equals('Nidoran'));
+        },
+      );
+      test(
+        'should sanitize evolution name by removing (Male) and (Female)',
+        () async {
+          // arrange
+          final pokemonWithEvolutionSuffixes = {
+            'id': 29,
+            'num': '029',
+            'name': 'Nidoran',
+            'img': 'http://www.serebii.net/pokemongo/pokemon/029.png',
+            'type': ['Poison'],
+            'height': '0.41 m',
+            'weight': '7.0 kg',
+            'candy': 'Nidoran (Female) Candy',
+            'candy_count': 25,
+            'egg': '5 km',
+            'spawn_chance': 1.38,
+            'avg_spawns': 138,
+            'spawn_time': '01:51',
+            'multipliers': [1.63, 2.48],
+            'weaknesses': ['Ground', 'Psychic'],
+            'next_evolution': [
+              {'num': '030', 'name': 'Nidorina (Male)'}, // Example suffix
+              {'num': '031', 'name': 'Nidoqueen (Female)'}, // Example suffix
+            ],
+          };
+
+          final responseData = {
+            'pokemon': [pokemonWithEvolutionSuffixes],
+          };
+
+          final mockResponse = Response(
+            requestOptions: RequestOptions(path: ''),
+            statusCode: 200,
+            data: json.encode(responseData),
+          );
+
+          when(
+            () => mockNetworkClient.get(any()),
+          ).thenAnswer((_) async => mockResponse);
+
+          // act
+          final result = await dataSource.getPokemons();
+
+          // assert
+          expect(result.length, equals(1));
+          expect(result[0].nextEvolution![0].name, equals('Nidorina'));
+          expect(result[0].nextEvolution![1].name, equals('Nidoqueen'));
+        },
+      );
     });
   });
 }

@@ -114,6 +114,7 @@ class PokemonCard extends StatelessWidget {
       color: isInverse ? Colors.white : ColorsConstants.darkBlue,
       fontSize: 18,
       fontWeight: FontWeight.bold,
+      height: 1.2,
     );
 
     if (searchTerm.isEmpty ||

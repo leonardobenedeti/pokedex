@@ -26,7 +26,10 @@ class PokemonModel extends PokemonEntity {
     return PokemonModel(
       id: json['id'],
       numLabel: json['num'],
-      name: json['name'],
+      name: (json['name'] as String)
+          .replaceAll('(Male)', '')
+          .replaceAll('(Female)', '')
+          .trim(),
       img: json['img'],
       type: List<String>.from(json['type']),
       height: json['height'],
