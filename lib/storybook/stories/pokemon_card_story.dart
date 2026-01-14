@@ -18,26 +18,29 @@ Story pokemonCardStory() => Story(
     );
 
     return Center(
-      child: PokemonCard(
-        pokemon: const PokemonEntity(
-          id: 4,
-          numLabel: '004',
-          name: 'Charmander',
-          img: 'https://www.serebii.net/pokemongo/pokemon/004.png',
-          type: ['Fire'],
-          height: '0.6 m',
-          weight: '8.5 kg',
-          candy: 'Charmander Candy',
-          egg: '2 km',
-          weaknesses: ['Water', 'Ground', 'Rock'],
+      child: SizedBox(
+        width: 160,
+        child: PokemonCard(
+          pokemon: const PokemonEntity(
+            id: 4,
+            numLabel: '004',
+            name: 'Charmander',
+            img: 'https://www.serebii.net/pokemongo/pokemon/004.png',
+            type: ['Fire'],
+            height: '0.6 m',
+            weight: '8.5 kg',
+            candy: 'Charmander Candy',
+            egg: '2 km',
+            weaknesses: ['Water', 'Ground', 'Rock'],
+          ),
+          searchTerm: searchTerm,
+          isInverse: isInverse,
+          onTap: () {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('Pokemon Tapped!')));
+          },
         ),
-        searchTerm: searchTerm,
-        isInverse: isInverse,
-        onTap: () {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Pokemon Tapped!')));
-        },
       ),
     );
   },
